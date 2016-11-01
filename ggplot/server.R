@@ -34,7 +34,9 @@ SELECT ?areaname ?nratio ?yearname ?areatypename WHERE {
 }'
   qd <- SPARQL(endpoint,query)
   df <-qd$results
-  df2013 <- df[(df$areatypename == 'Council Areas' & df$yearname == '2012-2013'), ]
+ # input$year
+  df2013 <- df[(df$areatypename == 'Council Areas' & df$yearname == input$year), ]
+ # df2013 <- df[(df$areatypename == 'Council Areas' & df$yearname == '2012-2013'), ]
   c <- ggplot(data = df2013, aes(x=reorder(areaname, -nratio), y=nratio, fill=areaname)) + theme_bw() + geom_bar(stat='identity') + theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + ggtitle('Alcohol-related Hospital Discharges 2012–2013 (Rate per 100,000 people)') + labs(x='Council Area', y='Rate per 100,000 people') + theme(legend.position='none')
   
   output$distPlot <- renderPlot({

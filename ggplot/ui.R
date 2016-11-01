@@ -15,16 +15,17 @@ library(ggplot2)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
-  
-  # Sidebar with a slider input for number of bins 
+  titlePanel("Alcohol related discharge data"),
+
+  # Sidebar with a slider input for the year to look ats 
   sidebarLayout(
     sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
+       sliderInput("year",
+                   "Year to consider:",
+                   min = 2012,
+                   max = 2016,
+                   value = 2013,
+                   step = 1)
     ),
     
     # Show a plot of the generated distribution
