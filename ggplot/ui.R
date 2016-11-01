@@ -20,11 +20,11 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for the year to look ats 
   sidebarLayout(
     sidebarPanel(
-       sliderInput("year",
+       sliderInput(inputId = "year",
                    "Year to consider:",
-                   min = 2012,
-                   max = 2016,
-                   value = 2013,
+                   min = 2008,
+                   max = 2012,
+                   value = 2010,
                    step = 1)
     ),
     
