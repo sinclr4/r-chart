@@ -1,9 +1,10 @@
 name: ggplot
+title:
 account: mynhs
 server: shinyapps.io
 appId: 135037
-bundleId: 602172
+bundleId: 603590
 url: https://mynhs.shinyapps.io/ggplot/
-when: 1477980195.90488
+when: 1478099462.14713
 asMultiple: FALSE
 asStatic: FALSE

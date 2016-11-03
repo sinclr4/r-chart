@@ -10,6 +10,7 @@
 library(shiny)
 library(SPARQL)
 library(ggplot2)
+library(leaflet)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -24,14 +25,18 @@ shinyUI(fluidPage(
                    "Year to consider:",
                    min = 2008,
                    max = 2012,
-                   value = 2010,
-                   step = 1)
+                   value = c(2010,2011),
+                   step = 1),
+      
+       uiOutput("choose_dataset")
+       
     ),
     
     # Show a plot of the generated distribution
     mainPanel(
     
       plotOutput("distPlot")
+    #  leafletOutput("mymap")
     )
   )
 ))

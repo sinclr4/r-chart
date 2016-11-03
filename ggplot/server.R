@@ -11,6 +11,7 @@ library(shiny)
 library(SPARQL)
 library(stringr)
 library(ggplot2)
+library(curl)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
@@ -33,13 +34,26 @@ SELECT ?areaname ?nratio ?yearname ?areatypename WHERE {
       rdfs:label ?areaname .
 ?areatype rdfs:label ?areatypename .
 }'
+  query2 <- '
+    SELECT ?LACode ?LAName
+  WHERE {
+    ?s <http://statistics.data.gov.uk/def/statistical-entity#code> <http://statistics.gov.scot/id/statistical-entity/S12>;
+    <http://www.w3.org/2004/02/skos/core#notation> ?LACode;
+    <http://statistics.data.gov.uk/def/statistical-geography#officialname> ?LAName;   
+    
+  }
+  ORDER BY ?LACode'
+  
   qd <- SPARQL(endpoint,query)
   df <-qd$results
+  qd2 <- SPARQL(endpoint,query2)
+  df2 <-qd2$results
  # input$year
-  
+ 
+    
   output$distPlot <- renderPlot({
     #moved from outside renderplot to inside - 2 lines
-    yearrange <- str_c(input$year,"-" , (input$year + 1), collapse='')
+    yearrange <- str_c(input$year, collapse='-')
     df2013 <- df[(df$areatypename == 'Council Areas' & df$yearname == yearrange), ]
     # df2013 <- df[(df$areatypename == 'Council Areas' & df$yearname == '2012-2013'), ]
     charttitle <- str_c('Alcohol-related Hospital Discharges ', yearrange, ' (Rate per 100,000 people)')
@@ -49,5 +63,25 @@ SELECT ?areaname ?nratio ?yearname ?areatypename WHERE {
    c
     
   })
+ # data_sets <- c("mtcars", "morley", "rock")
+  data_sets <- df2$LAName
+ # data_sets <- as.list(data_sets)
+  # Drop-down selection box for which data set
+  
+  output$choose_dataset <- renderUI({
+    selectInput("dataset", "Data set", as.list(data_sets), selected = NULL )
+  })
+  
+  url <- "https://raw.githubusercontent.com/glynnbird/usstatesgeojson/master/california.geojson"
+  geojson <- jsonlite::fromJSON(url)
+  output$mymap <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles("Stamen.TonerLite",
+                       options = providerTileOptions(noWrap = TRUE)
+      )
+    addGeoJSON(geojson)
+      #addMarkers(data = points())
+  })
+  
   
 })
