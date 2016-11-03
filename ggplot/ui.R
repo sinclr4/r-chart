@@ -35,7 +35,8 @@ shinyUI(fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
     
-      plotOutput("distPlot")
+      plotOutput("distPlot"),
+      plotOutput("trend_barchart", height=400, width="auto")
     #  leafletOutput("mymap")
     )
   )

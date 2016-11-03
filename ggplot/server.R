@@ -72,6 +72,40 @@ SELECT ?areaname ?nratio ?yearname ?areatypename WHERE {
     selectInput("dataset", "Data set", as.list(data_sets), selected = NULL )
   })
   
+  
+  querychart = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+  SELECT ?year ?consumption
+  WHERE {
+  ?observation <http://purl.org/linked-data/cube#dataSet> <http://statistics.gov.scot/data/energy-consumption>.
+  ?observation <http://purl.org/linked-data/sdmx/2009/dimension#refPeriod> ?yearURI.
+  ?observation <http://statistics.gov.scot/def/measure-properties/count> ?consumption.
+  ?observation <http://purl.org/linked-data/sdmx/2009/dimension#refArea> ?refArea.
+  ?observation <http://statistics.gov.scot/def/dimension/energyType> ?EnergyType.
+  ?observation <http://statistics.gov.scot/def/dimension/customerType> ?CustomerType.
+  ?yearURI rdfs:label ?year .
+  
+  FILTER (?refArea = <http://statistics.gov.scot/id/statistical-geography/S12000036>)
+  FILTER (?EnergyType = <http://statistics.gov.scot/def/concept/energy-type/electricity>)
+  FILTER (?CustomerType = <http://statistics.gov.scot/def/concept/customer-type/all>)
+  }"
+  
+  output$trend_barchart <- renderPlot({
+    # get data from dataframe
+    qd <- SPARQL(endpoint,querychart)
+    df3 <-qd$results
+   
+    
+    # plotting
+    plot <- ggplot(df3, aes(x=year, y=consumption)) +
+      geom_bar(data=df3, aes(y=consumption), stat="identity", color="black") 
+        return(plot)
+  })
+  
+  
+  
+  
+  
   url <- "https://raw.githubusercontent.com/glynnbird/usstatesgeojson/master/california.geojson"
   geojson <- jsonlite::fromJSON(url)
   output$mymap <- renderLeaflet({
